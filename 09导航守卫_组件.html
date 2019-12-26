@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+  <meta charset='UTF-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+  <meta http-equiv='X-UA-Compatible' content='ie=edge'>
+  <script src='../vue.js'></script>
+  <script src='../vue-router.js'></script>
+  <title>导航守卫-组件</title>
+</head>
+
+<body>
+  <div id='app'>
+    <router-link to="/">首页</router-link>
+    <router-link to="/account/111">111的账户</router-link>
+    <router-link to="/account/222">222的账户</router-link>
+    <router-view></router-view>
+  </div>
+  <script>
+    let index = {
+      template: "<h1>首页</h1>"
+    }
+    let account = {
+      data: function () {
+        return {
+          username: "zhiliao"
+        }
+      },
+      template: "<h1>我的账户</h1>",
+      beforeRouteEnter: function (to, from, next) {
+        console.log('to:', to);
+        console.log('from:', from);
+        console.log(this.username);
+        next(vm => {
+          console.log('username:', vm.username);
+        })
+      },
+      beforeRouteUpdate: function (to, from, next) {
+        console.log('to:', to);
+        console.log('from:', from);
+        next()
+      },
+      beforeRouteLeave(to, from, next) {
+        let answer = window.confirm("您确定要离开这个页面吗？")
+        if (answer) {
+          next()
+        }
+      }
+    }
+    var router = new VueRouter({
+      routes: [{
+          path: "/",
+          component: index,
+          name: "index"
+        },
+        {
+          path: "/account/:userid",
+          component: account,
+          name: "account"
+        }
+      ]
+    })
+    new Vue({
+      el: '#app',
+      router
+    })
+  </script>
+</body>
+
+</html>

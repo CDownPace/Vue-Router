@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='UTF-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+  <meta http-equiv='X-UA-Compatible' content='ie=edge'>
+  <script src='../lib/vue.js'></script>
+  <script src='../lib/vue-router.js'></script>
+  <title>路由元信息</title>
+</head>
+<body>
+  <div id='app'>
+    <router-link to="/">首页</router-link>
+    <router-link to="/profile/111">个人中心</router-link>
+    <router-link to="/login">登录</router-link>
+    <router-view></router-view>
+  </div>
+  <script>
+    const logined = false
+    let index = {template: "<h1>首页</h1>"}
+    let profile = {template: "<h1>个人中心：{{$route.params.userid}}</h1>"}
+    let login = {template: "<h1>登录页面</h1>"}
+
+    let router = new VueRouter({
+      routes: [
+        {path: "/",component: index},
+        {path: "/profile/:userid",component: profile,meta:{requireAuth:true}},
+        {path: "/login",component: login}
+      ]
+    })
+
+    router.beforeEach(function(to,from,next){
+      if(to.meta.requireAuth && !logined){
+        next('/login')
+      }else{
+        next()
+      }
+    })
+
+    new Vue({
+      el: '#app',
+      router
+    })
+  </script>
+</body>
+</html>
